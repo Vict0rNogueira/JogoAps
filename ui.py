@@ -92,6 +92,22 @@ class BattleUI:
         self.boss_health = HealthBar(WIDTH - 460, 40, 100)
         
         self.turn_message = ""
+        self.restart_button = UIButton(
+            WIDTH // 2 - 260,
+            HEIGHT // 2 + 80,
+            200,
+            70,
+            "Reiniciar",
+            GREEN
+        )
+        self.quit_button = UIButton(
+            WIDTH // 2 + 60,
+            HEIGHT // 2 + 80,
+            200,
+            70,
+            "Sair",
+            RED
+        )
     
     def update_message(self, message):
         """Atualiza mensagem de turno"""
@@ -144,6 +160,19 @@ class BattleUI:
             return True
         if self.false_button.is_clicked(pos):
             return False
+        return None
+
+    def draw_defeat_buttons(self, screen):
+        """Desenha botões de derrota"""
+        self.restart_button.draw(screen)
+        self.quit_button.draw(screen)
+
+    def get_defeat_button_at_pos(self, pos):
+        """Retorna qual botão de derrota foi clicado"""
+        if self.restart_button.is_clicked(pos):
+            return "restart"
+        if self.quit_button.is_clicked(pos):
+            return "quit"
         return None
 
 

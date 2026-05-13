@@ -75,6 +75,31 @@ class GameStateManager:
                 boss_spell.launch()
                 spell_sound.play()
                 self.battle_ui.update_message("O boss lançou magia!")
+
+    def handle_defeat_input(self, mouse_pos):
+        """Processa clique nos botões de derrota"""
+        button = self.battle_ui.get_defeat_button_at_pos(mouse_pos)
+        if button == "restart":
+            self.reset_battle()
+            return "restart"
+        if button == "quit":
+            loss_sound.play()
+            return "quit"
+        return None
+
+    def reset_battle(self):
+        """Reinicia o estado da batalha"""
+        player = self.game_objects["player"]
+        boss = self.game_objects["boss"]
+        player.hp = player.max_hp
+        boss.hp = boss.max_hp
+        self.game_objects["round"].generate_new()
+        self.game_objects["player_spell"].reset()
+        self.game_objects["boss_spell"].reset()
+        self.game_over = False
+        self.battle_ui.update_message("")
+        self.boss_hit_timer = 0
+        self.player_hit_timer = 0
     
     def update_battle(self):
         """Atualiza lógica da batalha"""
@@ -188,20 +213,21 @@ class GameStateManager:
             pygame.draw.circle(screen, YELLOW, (int(boss_spell.x), int(boss_spell.y)), 12)
         
         # UI
-        self.battle_ui.draw_health(screen)
-        self.battle_ui.draw_logic_puzzle(
-            screen,
-            *self.game_objects["round"].get_values()
-        )
-        self.battle_ui.draw_buttons(screen)
-        self.battle_ui.draw_turn_message(screen)
-        
-        # Fim de jogo
-        if self.game_over:
+        if not self.game_over:
+            self.battle_ui.draw_health(screen)
+            self.battle_ui.draw_logic_puzzle(
+                screen,
+                *self.game_objects["round"].get_values()
+            )
+            self.battle_ui.draw_buttons(screen)
+            self.battle_ui.draw_turn_message(screen)
+        else:
+            self.battle_ui.draw_health(screen)
             if boss.hp <= 0:
                 EndGameUI.draw_victory(screen)
             else:
                 EndGameUI.draw_defeat(screen)
+                self.battle_ui.draw_defeat_buttons(screen)
     
     def draw_victory_dialogue(self, screen):
         """Desenha tela de diálogo de vitória"""

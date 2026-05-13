@@ -100,7 +100,12 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if state_manager.current_state == "battle":
                 mouse_pos = pygame.mouse.get_pos()
-                state_manager.handle_battle_input(mouse_pos)
+                if state_manager.game_over and game_objects["player"].hp <= 0:
+                    action = state_manager.handle_defeat_input(mouse_pos)
+                    if action == "quit":
+                        running = False
+                else:
+                    state_manager.handle_battle_input(mouse_pos)
     
     # ================= MOVIMENTO MUNDO =================
     if state_manager.current_state == "world":
