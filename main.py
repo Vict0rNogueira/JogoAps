@@ -585,7 +585,7 @@ while running:
         draw_text(
             f"P = {p}",
             font,
-            BLUE,
+            BLACK,
             WIDTH // 2 - 180,
             HEIGHT // 2 + 20
         )
@@ -593,7 +593,7 @@ while running:
         draw_text(
             f"Q = {q}",
             font,
-            BLUE,
+            BLACK,
             WIDTH // 2 - 20,
             HEIGHT // 2 + 20
         )
@@ -601,7 +601,7 @@ while running:
         draw_text(
             f"R = {r}",
             font,
-            BLUE,
+            BLACK,
             WIDTH // 2 + 140,
             HEIGHT // 2 + 20
         )
