@@ -84,13 +84,27 @@ class Boss:
 class Spell:
     """Classe de magia/projétil"""
     def __init__(self, x, y, target_x, is_player_spell=True):
+        self.start_x = x
+        self.start_y = y
         self.x = x
         self.y = y
         self.target_x = target_x
         self.is_player_spell = is_player_spell
         self.speed = SPELL_SPEED
         self.damage = PLAYER_SPELL_DAMAGE if is_player_spell else BOSS_SPELL_DAMAGE
+        self.active = False
+    
+    def launch(self):
+        """Ativa a magia e posiciona no ponto inicial"""
+        self.x = self.start_x
+        self.y = self.start_y
         self.active = True
+    
+    def reset(self):
+        """Desativa a magia e retorna ao ponto inicial"""
+        self.x = self.start_x
+        self.y = self.start_y
+        self.active = False
     
     def update(self):
         """Atualiza posição da magia"""
@@ -143,3 +157,32 @@ class NPC:
     def has_more_dialogue(self, index):
         """Verifica se há mais diálogos"""
         return index < len(self.dialogues)
+
+
+class VictoryDialogue:
+    """Gerencia diálogos de vitória após vencer a batalha"""
+    def __init__(self, npc_img):
+        self.img = npc_img
+        self.name = "Professor Silvio"
+        
+        # =================Adicione novas falas de vitória =================
+        self.victory_dialogues = [
+            "Parabéns, você conseguiu!",
+            "Finalmente alguém que presta atenção!",
+            "E não vai repetir 3 vezes a mesma cadeira.",
+            "Agora vaza daqui seu bosta.",
+        ]
+        # =================================================================================
+    
+    def get_dialogue(self, index):
+        """Retorna diálogo específico"""
+        if index < len(self.victory_dialogues):
+            return self.victory_dialogues[index]
+        return ""
+    
+    def has_more_dialogue(self, index):
+        """Verifica se há mais diálogos"""
+        return index < len(self.victory_dialogues)
+    def draw(self, screen):
+        """Desenha o NPC"""
+        screen.blit(self.img, (WIDTH // 2 - 100, HEIGHT // 2 - 300))

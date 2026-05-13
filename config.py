@@ -41,7 +41,7 @@ PLAYER_SPEED = 7
 # ================= SPELLS =================
 SPELL_SPEED = 18
 PLAYER_SPELL_DAMAGE = 25
-BOSS_SPELL_DAMAGE = 15
+BOSS_SPELL_DAMAGE = 25
 
 # ================= HP =================
 PLAYER_MAX_HP = 100

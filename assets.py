@@ -27,13 +27,13 @@ world_bg = load_image_convert("assets/world.png", (WIDTH, HEIGHT))
 dialogue_img = load_image("assets/dialogue.png", (WIDTH, HEIGHT))
 
 # Personagens
-player_img = load_image("assets/download.jpeg", (220, 220))
+player_img = load_image("assets/player.png", (100, 100))
 boss_img = load_image("assets/boss-preview.png", (280, 280))
 npc_img = load_image("assets/npc.jpeg", (200, 200))
 
 # Player no mundo
 try:
-    player_world_img = load_image("assets/player.png", (80, 80))
+    player_world_img = load_image("assets/player.png", (30, 30))
 except:
     print("ERRO AO CARREGAR PLAYER.PNG")
     player_world_img = pygame.Surface((80, 80))
@@ -53,6 +53,7 @@ spell_sound = load_sound("assets/sounds/spell.wav")
 hit_sound = load_sound("assets/sounds/hit.wav")
 dialogue_sound = load_sound("assets/sounds/dialogue.wav")
 victory_sound = load_sound("assets/sounds/victory.wav")
+loss_sound = load_sound("assets/sounds/Loss_Sound.wav")
 
 # Música de fundo
 pygame.mixer.music.load("assets/sounds/battle.wav")

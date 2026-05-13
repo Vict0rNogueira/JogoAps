@@ -4,7 +4,7 @@ Gerenciador de estados do jogo
 import pygame
 import random
 from config import WIDTH, HEIGHT, PLAYER_BATTLE_X, PLAYER_BATTLE_Y
-from assets import background, world_bg, dialogue_img, spell_img, spell_sound, hit_sound
+from assets import background, world_bg, dialogue_img, spell_img, spell_sound, hit_sound, victory_sound, loss_sound
 from ui import WorldUI, DialogueUI, EndGameUI, BattleUI, draw_text
 from config import BLACK, WHITE, RED, BLUE, YELLOW
 
@@ -17,6 +17,7 @@ class GameStateManager:
         self.game_objects = game_objects
         self.battle_ui = BattleUI()
         self.dialogue_index = 0
+        self.victory_dialogue_index = 0
         self.game_over = False
         self.victory_played = False
         self.boss_hit_timer = 0
@@ -31,12 +32,20 @@ class GameStateManager:
         elif new_state == "battle":
             self.game_over = False
             self.victory_played = False
+        elif new_state == "victory_dialogue":
+            self.victory_dialogue_index = 0
     
     def next_dialogue(self):
         """Avança diálogo"""
         npc = self.game_objects["npc"]
         if self.dialogue_index < len(npc.dialogues):
             self.dialogue_index += 1
+    
+    def next_victory_dialogue(self):
+        """Avança diálogo de vitória"""
+        victory_dialogue = self.game_objects["victory_dialogue"]
+        if self.victory_dialogue_index < len(victory_dialogue.victory_dialogues):
+            self.victory_dialogue_index += 1
     
     def handle_battle_input(self, mouse_pos):
         """Processa clique na batalha"""
@@ -59,11 +68,11 @@ class GameStateManager:
             is_correct = game_round.check(player_choice)
             
             if is_correct:
-                player_spell.active = True
+                player_spell.launch()
                 spell_sound.play()
                 self.battle_ui.update_message("Magia lançada!")
             else:
-                boss_spell.active = True
+                boss_spell.launch()
                 spell_sound.play()
                 self.battle_ui.update_message("O boss lançou magia!")
     
@@ -101,15 +110,20 @@ class GameStateManager:
         self.battle_ui.set_player_hp(player.hp)
         self.battle_ui.set_boss_hp(boss.hp)
         
-        # Verifica fim de jogo
+        # Verifica fim de jogo - Vitória
         if boss.hp <= 0 and not self.game_over:
             self.game_over = True
             from assets import victory_sound
             victory_sound.play()
             self.victory_played = True
+            # Transiciona para diálogo de vitória após 1 segundo
+            pygame.time.delay(500)
+            self.transition_to("victory_dialogue")
         
+        # Verifica fim de jogo - Derrota
         if player.hp <= 0 and not self.game_over:
             self.game_over = True
+            loss_sound.play()
     
     def draw_world(self, screen, player):
         """Desenha tela de mundo"""
@@ -188,3 +202,12 @@ class GameStateManager:
                 EndGameUI.draw_victory(screen)
             else:
                 EndGameUI.draw_defeat(screen)
+    
+    def draw_victory_dialogue(self, screen):
+        """Desenha tela de diálogo de vitória"""
+        screen.blit(dialogue_img, (0, 0))
+        
+        victory_dialogue = self.game_objects["victory_dialogue"]
+        dialogue_text = victory_dialogue.get_dialogue(self.victory_dialogue_index)
+        
+        DialogueUI.draw_dialogue(screen, victory_dialogue.name, dialogue_text)
